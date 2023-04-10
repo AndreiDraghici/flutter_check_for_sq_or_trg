@@ -8,7 +8,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,78 +19,80 @@ class MyApp extends StatelessWidget {
 }
 
 class Check extends StatefulWidget {
-  const Check({Key? key}) : super(key: key);
+  const Check({super.key});
 
   @override
   State<Check> createState() => _CheckState();
 }
 
 class _CheckState extends State<Check> {
-  TextEditingController _input_numer = TextEditingController();
-  int _is_squared = 0;
-  int _is_triangle = 0;
-  String ans = "";
-  String input = "";
+  final TextEditingController _inputNumber = TextEditingController();
+  int _isSquared = 0;
+  int _isTriangle = 0;
+  String ans = '';
+  String input = '';
 
   void reset() {
-    _is_squared = 0;
-    _is_triangle = 0;
-    ans = "";
+    _isSquared = 0;
+    _isTriangle = 0;
+    ans = '';
   }
 
-  showAlertDialog(BuildContext context) {
-    Widget okButton = TextButton(
+  void showAlertDialog(BuildContext context) {
+    final TextButton okButton = TextButton(
       onPressed: () {
         Navigator.pop(context);
       },
-      child: Text("Ok."),
+      child: const Text('Ok.'),
     );
 
-    AlertDialog alertDialog = AlertDialog(
+    final AlertDialog alertDialog = AlertDialog(
       title: Text(
-        input.toString(),
+        input,
       ),
       content: Text(
         ans,
       ),
-      actions: [
+      actions: <Widget>[
         okButton,
       ],
     );
 
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alertDialog;
-        });
+      context: context,
+      builder: (BuildContext context) {
+        return alertDialog;
+      },
+    );
   }
 
-  void verify(dynamic nr) {
+  void verify(String number) {
+    int nr;
     try {
-      nr = int.parse(nr);
+      nr = int.parse(number);
     } catch (e) {
       if (kDebugMode) {
         print(e);
       }
       return;
     }
-    int sq = sqrt(nr).round();
-    int trg = pow(nr, 1 / 3).round();
+    final int sq = sqrt(nr).round();
+    final int trg = pow(nr, 1 / 3).round();
 
     if (nr == sq * sq) {
-      _is_squared = 1;
+      _isSquared = 1;
     }
     if (nr == trg * trg * trg) {
-      _is_triangle = 1;
+      _isTriangle = 1;
     }
-    if (_is_squared == 1 && _is_triangle == 1) {
-      ans = "Number is Squared and Triangle";
-    } else if (_is_triangle == 1) {
-      ans = "Number is Triangle";
-    } else if (_is_squared == 1) {
-      ans = "Number is squared";
+    if (_isSquared == 1 && _isTriangle == 1) {
+      ans = 'Number is Squared and Triangle';
+    } else if (_isTriangle == 1) {
+      ans = 'Number is Triangle';
+    } else if (_isSquared == 1) {
+      ans = 'Number is squared';
     } else {
-      ans = "Number is not squared nor triangle";
+      ans = 'Number is not squared nor triangle';
     }
   }
 
@@ -98,32 +100,30 @@ class _CheckState extends State<Check> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Number Shapes"),
+        title: const Text('Number Shapes'),
         centerTitle: true,
       ),
       body: Column(
-        children: [
+        children: <Widget>[
           const Padding(
             padding: EdgeInsets.only(top: 25),
             child: Text(
-              "Please input a number to see if it is square or triangular.",
+              'Please input a number to see if it is square or triangular.',
               style: TextStyle(fontSize: 25),
             ),
           ),
           TextField(
             keyboardType: TextInputType.number,
-            decoration: const InputDecoration(labelText: "Number:"),
-            controller: _input_numer,
-            inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly
-            ],
+            decoration: const InputDecoration(labelText: 'Number:'),
+            controller: _inputNumber,
+            inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.check),
         onPressed: () {
-          input = _input_numer.text;
+          input = _inputNumber.text;
           verify(input);
           showAlertDialog(context);
           reset();
